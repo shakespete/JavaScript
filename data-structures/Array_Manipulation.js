@@ -27,14 +27,12 @@ function readLine() {
 
 // Complete the arrayManipulation function below.
 function arrayManipulation(n, queries) {
-  let rows = queries.length + 1;
   let maxVal = 0;
-
   let latestRow = Array(n).fill(0);
-  for (let i = 1; i < rows; ++i) {
-    let leftBound = queries[i - 1][0] - 1;
-    let rightBound = queries[i - 1][1] - 1;
-    let value = queries[i - 1][2];
+  for (let i = 0; i < queries.length; ++i) {
+    let leftBound = queries[i][0] - 1;
+    let rightBound = queries[i][1] - 1;
+    let value = queries[i][2];
 
     for (let j = leftBound; j <= rightBound; ++j) {
       let sum = latestRow[j] + value;
