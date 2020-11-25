@@ -1,36 +1,28 @@
-"use strict";
+function decentNumber(n) {
+  let ans = "";
 
-process.stdin.resume();
-process.stdin.setEncoding("utf-8");
+  const str3 = "555";
+  const str5 = "33333";
 
-let inputString = "";
-let currentLine = 0;
+  let mod3 = n % 3;
+  let mod5 = n % 5;
 
-process.stdin.on("data", function (inputStdin) {
-  inputString += inputStdin;
-});
+  let qty3 = Math.floor(n / 3);
+  let qty5 = Math.floor(n / 5);
 
-process.stdin.on("end", function () {
-  inputString = inputString.split("\n");
-
-  main();
-});
-
-function readLine() {
-  return inputString[currentLine++];
-}
-
-// Complete the decentNumber function below.
-function decentNumber(n) {}
-
-function main() {
-  const t = parseInt(readLine().trim(), 10);
-
-  for (let tItr = 0; tItr < t; tItr++) {
-    const n = parseInt(readLine().trim(), 10);
-
-    decentNumber(n);
+  if (mod3 === 0) {
+    console.log(qty3, mod3);
+    for (let i = 1; i <= qty3; ++i) {
+      ans += str3;
+    }
+  } else if (mod5 === 0) {
+    console.log(qty5, mod5);
+    for (let i = 1; i <= qty5; ++i) {
+      ans += str5;
+    }
+  } else {
   }
+  console.log(ans);
 }
 
 // 4
