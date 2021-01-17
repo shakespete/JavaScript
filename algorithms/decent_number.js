@@ -27,22 +27,30 @@ function decentNumber(n) {
   console.log(ans);
 }
 
-const greedy = (str = '', N) => {
-  if (N === 0) return str;
-  else if (N >= 3) {
+const greedy = (str = '', N, arr) => {
+  if (N === 0) {
+    if (arr.length) {
+        const val = parseInt(str);
+        if (val > arr[0]) arr[0] = val;
+    } else {
+        arr.push(parseInt(str));
+    }
+  } else if (N < 0) {
+    if (arr.indexOf(-1) === -1) arr.push(-1);
+  } else {
     let currStr = str;
     let currN = N;
-
-    greedy(currStr += '555', N - 3);
-    // Need to backtrack!
-    greedy(currStr += '33333', N - 5);
-  } else {
-    return '-1';
+    
+    greedy(currStr += '555', N - 3, arr);
+    greedy(str += '33333', N - 5, arr);
   }
+  return;
 } 
 
 function decentNumber(n) {
-  greedy('', n);
+  let arr = []
+  greedy('', n, arr);
+  console.log(arr[0]);
 }
 
 // 4
