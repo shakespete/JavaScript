@@ -1,5 +1,4 @@
 /* The maximum number of minutes in a period (a day) */
-
 const MAX_IN_PERIOD = 1440;
 
 /**
@@ -29,15 +28,14 @@ const calculateEnergyUsageSimple = (profile, day = 1) => {
   for (const event of events) {
     const { timestamp: currentTs, state: currentState } = event;
 
+    if (previousState === currentState) continue;
+
     if (previousState === 'on' && currentState === 'off') {
       energyUsage += currentTs - previousTs;
-
-      previousState = currentState;
-      previousTs = currentTs;
-    } else if (previousState !== currentState) {
-      previousState = currentState;
-      previousTs = currentTs;
     }
+
+    previousState = currentState;
+    previousTs = currentTs;
   }
 
   // By this point we have exhausted all the events. BUT the last event could
@@ -59,24 +57,21 @@ const calculateEnergySavings = (profile) => {
   for (const event of events) {
     const { timestamp: currentTs, state: currentState } = event;
 
-    if (previousState === 'auto-off' && currentState === 'on') {
-      energySavings += currentTs - previousTs;
-
-      previousState = currentState;
-      previousTs = currentTs;
-    } else if (
+    if (
+      previousState === currentState ||
       (previousState === 'auto-off' && currentState === 'off') ||
       (previousState === 'off' && currentState === 'auto-off')
-    ) {
+    )
       continue;
-    } else if (previousState !== currentState) {
-      previousState = currentState;
-      previousTs = currentTs;
+
+    if (previousState === 'auto-off' && currentState === 'on') {
+      energySavings += currentTs - previousTs;
     }
+    previousState = currentState;
+    previousTs = currentTs;
   }
 
   if (previousState === 'auto-off') energySavings += MAX_IN_PERIOD - previousTs;
-
   return energySavings;
 };
 
@@ -119,17 +114,17 @@ const calculateEnergyUsageForDay = (monthUsageProfile, day) => {
 
   if (daysInYear[day]) return calculateEnergyUsageSimple(daysInYear[day], day);
   else {
-    // Get nearest previous day to current
+    // Get most recent previous day
     let nearestPrev = day;
     while (
-      (!daysInYear[nearestPrev] && nearestPrev > 0) ||
-      (daysInYear[nearestPrev] && daysInYear[nearestPrev].events.length === 0)
+      (!daysInYear[nearestPrev] && nearestPrev > 0) || // Data for this day does not exist
+      (daysInYear[nearestPrev] && daysInYear[nearestPrev].events.length === 0) // Day does exist but no events
     )
       nearestPrev--;
 
     let dayInitial = initial;
     if (daysInYear[nearestPrev]) {
-      // Get state of last event
+      // Get state of last event of the most recent previous day
       const lastEvent = daysInYear[nearestPrev].events.length - 1;
       dayInitial = daysInYear[nearestPrev].events[lastEvent].state;
     }
